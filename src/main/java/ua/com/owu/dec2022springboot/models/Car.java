@@ -38,9 +38,16 @@ public class Car {
     @JsonView(value = {Views.Level1.class,Views.Level2.class})
     private int power;
 
-    public Car(String model, String producer, int power) {
+    @JsonView(value = Views.Level1.class)
+    private int userId;
+
+    @JsonView(value = {Views.Level1.class})
+    private String photo;
+
+    public Car(String model, String producer, int power, int userId) {
         this.model = model;
         this.producer = producer;
         this.power = power;
+        this.userId=userId;
     }
 }

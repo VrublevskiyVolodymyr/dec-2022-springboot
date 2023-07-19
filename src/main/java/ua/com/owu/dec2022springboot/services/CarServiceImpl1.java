@@ -1,25 +1,41 @@
 package ua.com.owu.dec2022springboot.services;
 
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import ua.com.owu.dec2022springboot.dao.CarDAO;
 import ua.com.owu.dec2022springboot.models.Car;
+import ua.com.owu.dec2022springboot.models.User;
 
+import java.io.File;
 import java.util.List;
+import java.util.Objects;
 
 @Service // @Service("one")
 @AllArgsConstructor
-public class CarServiceImpl1 implements CarService{
-    private CarDAO carDAO;
 
-    public  void save(Car car) {
+public class CarServiceImpl1 implements CarService {
+    private CarDAO carDAO;
+    private UserService userService;
+    private MailService mailService;
+
+    public void save(Car car) {
         if (car == null) {
             throw new RuntimeException();
         }
         carDAO.save(car);
+
+        User user = userService.getUserById(car.getUserId()).getBody();
+        assert user != null;
+        String email = user.getEmail();
+        String body = "Hello user " + user.getName() + " car " + car.toString() + " is created :)";
+        mailService.sendEmail(email, body);
     }
 
     public ResponseEntity<List<Car>> getAllCars() {
@@ -36,7 +52,15 @@ public class CarServiceImpl1 implements CarService{
 
     public void deleteCar(int id) {
         if (id > 0) {
+
+            Car car = carDAO.findById(id).get();
             carDAO.deleteById(id);
+
+            User user = userService.getUserById(car.getUserId()).getBody();
+            assert user != null;
+            String email = user.getEmail();
+            String body = "Hello user  " + user.getName() + " car id " + id + "  is deleted";
+            mailService.sendEmail(email, body);
         }
     }
 
@@ -46,5 +70,17 @@ public class CarServiceImpl1 implements CarService{
 
     public ResponseEntity<List<Car>> getCarByProducer(@PathVariable String value) {
         return new ResponseEntity<>(carDAO.findByProducer(value), HttpStatus.OK);
+    }
+
+    @SneakyThrows
+    @Override
+    public void saveWithPhoto(String model, String producer, int power, int userId, MultipartFile photo) {
+        Car car = new Car(model, producer, power, userId);
+        String originalFilename = photo.getOriginalFilename();
+        car.setPhoto("/photo/" + originalFilename);
+        String path = System.getProperty("user.home") + File.separator + "images" + File.separator + originalFilename;
+        File file = new File(path);
+        photo.transferTo(file);
+        carDAO.save(car);
     }
 }
