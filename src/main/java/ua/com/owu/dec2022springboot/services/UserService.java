@@ -12,6 +12,7 @@ import ua.com.owu.dec2022springboot.models.User;
 import ua.com.owu.dec2022springboot.models.UserDTO;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -28,7 +29,7 @@ public class UserService {
 
         String email = user.getEmail();
         String body = "Hello user  " + user.getName() + " to activate your account click <a href='http://localhost:8080/users/activate/" + user.getId() + " '>here</a>";
-        mailService.sendEmail(email, body);
+        mailService.sendEmail(email, body, Optional.empty());
     }
 
     public ResponseEntity<List<User>> getAllUsers() {

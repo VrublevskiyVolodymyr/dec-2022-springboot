@@ -14,8 +14,10 @@ import ua.com.owu.dec2022springboot.models.Car;
 import ua.com.owu.dec2022springboot.models.User;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service // @Service("one")
 @AllArgsConstructor
@@ -35,7 +37,7 @@ public class CarServiceImpl1 implements CarService {
         assert user != null;
         String email = user.getEmail();
         String body = "Hello user " + user.getName() + " car " + car.toString() + " is created :)";
-        mailService.sendEmail(email, body);
+        mailService.sendEmail(email, body, Optional.empty());
     }
 
     public ResponseEntity<List<Car>> getAllCars() {
@@ -60,7 +62,7 @@ public class CarServiceImpl1 implements CarService {
             assert user != null;
             String email = user.getEmail();
             String body = "Hello user  " + user.getName() + " car id " + id + "  is deleted";
-            mailService.sendEmail(email, body);
+            mailService.sendEmail(email, body, Optional.empty());
         }
     }
 
@@ -82,5 +84,13 @@ public class CarServiceImpl1 implements CarService {
         File file = new File(path);
         photo.transferTo(file);
         carDAO.save(car);
+
+        User user = userService.getUserById(userId).getBody();
+        assert user != null;
+        String email = user.getEmail();
+        String body = "Hello user " + user.getName() + " car " + car.toString() + " is created :)";
+
+        mailService.sendEmail(email, body, Optional.of(file));
     }
+
 }
