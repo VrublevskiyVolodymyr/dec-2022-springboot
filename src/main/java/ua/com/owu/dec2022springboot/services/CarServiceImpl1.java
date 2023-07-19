@@ -2,12 +2,10 @@ package ua.com.owu.dec2022springboot.services;
 
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import ua.com.owu.dec2022springboot.dao.CarDAO;
 import ua.com.owu.dec2022springboot.models.Car;
@@ -15,7 +13,7 @@ import ua.com.owu.dec2022springboot.models.User;
 
 import java.io.File;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 @Service // @Service("one")
 @AllArgsConstructor
@@ -35,7 +33,7 @@ public class CarServiceImpl1 implements CarService {
         assert user != null;
         String email = user.getEmail();
         String body = "Hello user " + user.getName() + " car " + car.toString() + " is created :)";
-        mailService.sendEmail(email, body);
+        mailService.sendEmail(email, body, Optional.empty());
     }
 
     public ResponseEntity<List<Car>> getAllCars() {
@@ -60,7 +58,7 @@ public class CarServiceImpl1 implements CarService {
             assert user != null;
             String email = user.getEmail();
             String body = "Hello user  " + user.getName() + " car id " + id + "  is deleted";
-            mailService.sendEmail(email, body);
+            mailService.sendEmail(email, body,Optional.empty());
         }
     }
 
@@ -82,5 +80,11 @@ public class CarServiceImpl1 implements CarService {
         File file = new File(path);
         photo.transferTo(file);
         carDAO.save(car);
+
+        User user = userService.getUserById(userId).getBody();
+        assert user != null;
+        String email = user.getEmail();
+        String body = "Hello user " + user.getName() + " car " + car.toString() + " is created :)";
+        mailService.sendEmail(email, body, Optional.of(file));
     }
 }
