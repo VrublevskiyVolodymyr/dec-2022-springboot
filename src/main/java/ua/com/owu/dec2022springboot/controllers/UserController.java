@@ -1,5 +1,6 @@
 package ua.com.owu.dec2022springboot.controllers;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import ua.com.owu.dec2022springboot.dao.UserDAO;
 import ua.com.owu.dec2022springboot.models.User;
 import ua.com.owu.dec2022springboot.models.UserDTO;
 import ua.com.owu.dec2022springboot.services.UserService;
+import ua.com.owu.dec2022springboot.views.Views;
 
 import java.util.List;
 
@@ -26,11 +28,13 @@ public class UserController {
     }
 
     @GetMapping()
+    @JsonView(value = Views.Level3.class)
     public ResponseEntity<List<User>> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
+    @JsonView(value = Views.Level1.class)
     public ResponseEntity<User> findUserById(@PathVariable() int id) {
         return userService.getUserById(id);
     }
