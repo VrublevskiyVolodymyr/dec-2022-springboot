@@ -65,8 +65,8 @@ public class CarController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/saveWithPhoto")
     @JsonView(value = Views.Level1.class)
-    public void saveWithPhoto(@RequestParam String model, @RequestParam String producer, @RequestParam int power,int userId, @RequestParam MultipartFile photo)
+    public void saveWithPhoto(@RequestParam String producer, @RequestParam String model,  @RequestParam int power,int userId, @RequestParam MultipartFile photo)
             throws IOException {
-        carService.saveWithPhoto(model, producer, power, userId, photo);
+        carService.saveWithPhoto(producer, model,  power, userId, photo);
     }
 }

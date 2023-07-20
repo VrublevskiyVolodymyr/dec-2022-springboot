@@ -72,8 +72,8 @@ public class CarServiceImpl1 implements CarService {
 
     @SneakyThrows
     @Override
-    public void saveWithPhoto(String model, String producer, int power, int userId, MultipartFile photo) {
-        Car car = new Car(model, producer, power, userId);
+    public void saveWithPhoto(String producer, String model,  int power, int userId, MultipartFile photo) {
+        Car car = new Car(producer, model,  power, userId);
         String originalFilename = photo.getOriginalFilename();
         car.setPhoto("/photo/" + originalFilename);
         String path = System.getProperty("user.home") + File.separator + "images" + File.separator + originalFilename;
