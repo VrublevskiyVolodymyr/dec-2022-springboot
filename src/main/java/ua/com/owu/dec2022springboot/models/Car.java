@@ -19,22 +19,24 @@ public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonView(value = {Views.Level1.class})
-    private int id;
+    private String id;
+
+    @JsonView(value = {Views.Level1.class,Views.Level2.class,Views.Level3.class})
+    @NotBlank(message = "producer cannot be empty")
+    @Size(min = 2 ,max = 20, message = "producer mast be from 2 to 20 chars")
+    @Size( max = 20, message = "producer too long" )
+    @Pattern(regexp = "^[A-Za-z ][A-Za-z0-9]*$", message = "model mast be [a-zA-Z_0-9]")
+    private String producer;
+
     @NotBlank(message = "model cannot be empty")
     @Size(min = 2 ,max = 20, message = "model mast be from 2 to 20 chars")
     @Size( max = 20, message = "model too long" )
     @Pattern(regexp = "^[A-Za-z ][A-Za-z0-9]*$", message = "model mast be [a-zA-Z_0-9]")
-
     @JsonView(value = {Views.Level1.class,Views.Level2.class,Views.Level3.class})
     private String model;
-    @NotBlank(message = "producer cannot be empty")
-
-    @JsonView(value = {Views.Level1.class,Views.Level2.class,Views.Level3.class})
-    private String producer;
 
     @Min(value = 1, message ="power cannot be less then 1")
     @Max(value = 1100, message = "power cannot be more then 1100")
-
     @JsonView(value = {Views.Level1.class,Views.Level2.class})
     private int power;
 
@@ -44,10 +46,11 @@ public class Car {
     @JsonView(value = {Views.Level1.class})
     private String photo;
 
-    public Car(String model, String producer, int power, int userId) {
-        this.model = model;
+    public Car(String producer, String model,  int power, int userId) {
         this.producer = producer;
+        this.model = model;
         this.power = power;
         this.userId=userId;
     }
+
 }

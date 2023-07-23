@@ -3,27 +3,26 @@ package ua.com.owu.dec2022springboot.services;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import ua.com.owu.dec2022springboot.models.Car;
-
+import java.io.IOException;
 import java.util.List;
+
 
 @Service
 public interface CarService {
 
-    void save(Car car);
+    ResponseEntity<String> save(Car car);
 
     ResponseEntity<List<Car>> getAllCars();
 
-    ResponseEntity<Car> getCar(int id);
+    ResponseEntity<Car> getCar(String stringId);
 
-    void deleteCar(int id);
+    void deleteCar(String stringId);
 
     ResponseEntity<List<Car>> getCarsByPower(@PathVariable int value);
 
-    ResponseEntity<List<Car>> getCarByProducer(@PathVariable String value);
+    ResponseEntity<List<Car>> getCarByProducer(@PathVariable String producer);
 
-    void saveWithPhoto( String model,  String producer,  int power,   int userId,   MultipartFile photo);
+    void saveWithPhoto( String producer, String model,    int power,   int userId,   MultipartFile photo) throws IOException;
 }

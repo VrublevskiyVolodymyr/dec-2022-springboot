@@ -10,10 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import ua.com.owu.dec2022springboot.dao.UserDAO;
 import ua.com.owu.dec2022springboot.models.User;
 import ua.com.owu.dec2022springboot.models.UserDTO;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @AllArgsConstructor
 @Service

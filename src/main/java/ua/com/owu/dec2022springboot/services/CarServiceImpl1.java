@@ -23,7 +23,7 @@ public class CarServiceImpl1 implements CarService {
     private UserService userService;
     private MailService mailService;
 
-    public void save(Car car) {
+    public ResponseEntity<String> save(Car car) {
         if (car == null) {
             throw new RuntimeException();
         }
@@ -34,40 +34,40 @@ public class CarServiceImpl1 implements CarService {
         String email = user.getEmail();
         String body = "Hello user " + user.getName() + " car " + car.toString() + " is created :)";
         mailService.sendEmail(email, body, Optional.empty());
+        String stringId = String.valueOf(car.getId());
+        return new ResponseEntity<>(stringId, HttpStatus.CREATED);
     }
 
     public ResponseEntity<List<Car>> getAllCars() {
         return new ResponseEntity<>(carDAO.findAll(), HttpStatus.OK);
     }
 
-    public ResponseEntity<Car> getCar(int id) {
+    public ResponseEntity<Car> getCar( String stringId) {
         Car car = null;
-        if (id > 0) {
-            car = carDAO.findById(id).get();
+        int intId = Integer.parseInt(String.valueOf(stringId));
+        if (intId > 0) {
+            car = carDAO.findById(stringId).get();
         }
         return new ResponseEntity<>(car, HttpStatus.OK);
     }
 
-    public void deleteCar(int id) {
-        if (id > 0) {
-
-            Car car = carDAO.findById(id).get();
-            carDAO.deleteById(id);
-
+    public void deleteCar(String stringId) {
+            assert stringId != null;
+            Car car = carDAO.findById(stringId).get();
             User user = userService.getUserById(car.getUserId()).getBody();
             assert user != null;
             String email = user.getEmail();
-            String body = "Hello user  " + user.getName() + " car id " + id + "  is deleted";
+            String body = "Hello user  " + user.getName() + " car id " + stringId+ "  is deleted";
+            carDAO.deleteById(stringId);
             mailService.sendEmail(email, body,Optional.empty());
-        }
     }
 
     public ResponseEntity<List<Car>> getCarsByPower(@PathVariable int value) {
         return new ResponseEntity<>(carDAO.findByPower(value), HttpStatus.OK);
     }
 
-    public ResponseEntity<List<Car>> getCarByProducer(@PathVariable String value) {
-        return new ResponseEntity<>(carDAO.findByProducer(value), HttpStatus.OK);
+    public ResponseEntity<List<Car>> getCarByProducer(@PathVariable String producer) {
+        return new ResponseEntity<>(carDAO.findByProducer(producer), HttpStatus.OK);
     }
 
     @SneakyThrows
