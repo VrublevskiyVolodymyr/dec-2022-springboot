@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
-import ua.com.owu.dec2022springboot.models.Car;
+import ua.com.owu.dec2022springboot.dao.models.Car;
 import java.io.IOException;
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package ua.com.owu.dec2022springboot.models;
+package ua.com.owu.dec2022springboot.dao.models;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.Entity;

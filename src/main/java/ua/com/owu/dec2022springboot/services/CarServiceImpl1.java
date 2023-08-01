@@ -8,12 +8,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 import ua.com.owu.dec2022springboot.dao.CarDAO;
-import ua.com.owu.dec2022springboot.models.Car;
-import ua.com.owu.dec2022springboot.models.User;
+import ua.com.owu.dec2022springboot.dao.models.Car;
+import ua.com.owu.dec2022springboot.dao.models.User;
 
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+
+import static java.rmi.server.LogStream.log;
 
 @Service // @Service("one")
 @AllArgsConstructor

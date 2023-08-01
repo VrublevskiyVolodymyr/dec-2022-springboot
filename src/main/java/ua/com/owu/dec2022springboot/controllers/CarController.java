@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ua.com.owu.dec2022springboot.models.Car;
+import ua.com.owu.dec2022springboot.dao.models.Car;
 import ua.com.owu.dec2022springboot.services.CarService;
 import ua.com.owu.dec2022springboot.views.Views;
 
@@ -24,7 +24,7 @@ public class CarController {
 
     private final CarService carService;
 
-    public CarController( @Qualifier("carServiceImpl2") CarService carService) {  //@Qualifier("one")  or @Qualifier("two") if watch CarServiceImpl1,CarServiceImpl2
+    public CarController( @Qualifier("carServiceImpl1") CarService carService) {  //@Qualifier("one")  or @Qualifier("two") if watch CarServiceImpl1,CarServiceImpl2
         this.carService = carService;
     }
 
