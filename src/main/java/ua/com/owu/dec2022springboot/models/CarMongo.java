@@ -1,4 +1,4 @@
-package ua.com.owu.dec2022springboot.dao.models;
+package ua.com.owu.dec2022springboot.models;
 
 import jakarta.persistence.Id;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package ua.com.owu.dec2022springboot.dao.models;
+package ua.com.owu.dec2022springboot.models;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
@@ -13,8 +13,11 @@ import java.util.Collection;
 import java.util.List;
 
 
-@Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Data
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +25,10 @@ public class User implements UserDetails {
     private int id;
 
     @JsonView(value={Views.Level3.class,Views.Level1.class })
-    private String name;
+    private String firstname;
+
+    @JsonView(value={Views.Level3.class,Views.Level1.class })
+    private String lastname;
 
     @JsonView(value={Views.Level3.class,Views.Level1.class })
     private String password;
@@ -36,8 +42,17 @@ public class User implements UserDetails {
     @JsonView(value = Views.Level1.class)
     private List<Role> roles = List.of(Role.USER);
 
+    private String refreshToken;
+
     @JsonView(value = Views.Level1.class)
     private boolean isActivated = false;
+
+    public User(String firstname, String lastname, String password, String email) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.password = password;
+        this.email = email;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -46,10 +61,6 @@ public class User implements UserDetails {
             return authorities;
         }
 
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
 
     @Override
     public String getUsername() {
@@ -75,12 +86,5 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-    @Data
-    @AllArgsConstructor
-    @Builder
-    public static class UserDTO {
-        private String username;
-        private String useremail;
-        private String password;
-    }
+
 }

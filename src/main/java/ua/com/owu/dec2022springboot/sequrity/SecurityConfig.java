@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import ua.com.owu.dec2022springboot.sequrity.filters.JWTFilter;
+import ua.com.owu.dec2022springboot.filters.JWTFilter;
 
 import java.util.Arrays;
 
@@ -27,17 +28,19 @@ import java.util.Arrays;
 @Configuration
 public class SecurityConfig {
     private JWTFilter jwtFilter;
+    private AuthenticationProvider authenticationProvider;
 
     @Bean
     @SneakyThrows
     public SecurityFilterChain filterChain(HttpSecurity http) {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(managementConfigurer -> managementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
+                                .requestMatchers(HttpMethod.POST,"/api/v1/auth/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/users/save", "/users/login").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/users").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/users","/users/activate/{id}").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/users/**").hasAnyAuthority("ADMIN", "SUPERADMIN")
                                 .requestMatchers(HttpMethod.GET, "/users/**").hasAnyAuthority("ADMIN", "SUPERADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/users/**").hasAnyAuthority("ADMIN", "SUPERADMIN")
@@ -49,29 +52,9 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "/cars/**").hasAnyAuthority("ADMIN", "SUPERADMIN")
                                 .requestMatchers(HttpMethod.POST, "/cars/**").hasAnyAuthority("ADMIN", "SUPERADMIN")
                                 .requestMatchers(HttpMethod.PATCH, "/cars/**").hasAnyAuthority("ADMIN", "SUPERADMIN"))
+                .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @SneakyThrows
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedMethods(Arrays.asList("GET", HttpMethod.POST.name()));
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:4200"));
-        configuration.addExposedHeader("Authorization");
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
 }

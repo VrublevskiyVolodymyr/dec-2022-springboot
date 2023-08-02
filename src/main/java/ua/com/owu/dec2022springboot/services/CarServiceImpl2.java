@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ua.com.owu.dec2022springboot.dao.CarMongoDAO;
-import ua.com.owu.dec2022springboot.dao.models.Car;
-import ua.com.owu.dec2022springboot.dao.models.CarMongo;
+import ua.com.owu.dec2022springboot.models.Car;
+import ua.com.owu.dec2022springboot.models.CarMongo;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,26 +46,25 @@ public class CarServiceImpl2 implements CarService {
     }
 
     @Override
-    public ResponseEntity<Car> getCar(String stringId) {
+    public ResponseEntity<Car> getCar(int id) {
 
         CarMongo carMongo = null;
         Car car = null;
-        if (stringId != null) {
-            ObjectId objectId = convertToObjectId(stringId);
-            System.out.println(objectId);
+        if (id>=0) {
+            ObjectId objectId = convertToObjectId(String.valueOf(id));
             carMongo = carMongoDAO.findById(objectId).orElse(null);
             assert carMongo != null;
-            String id = carMongo.getId().toString();
+            String idString = carMongo.getId().toString();
             car = new Car(carMongo.getProducer(), carMongo.getModel(), carMongo.getPower(), carMongo.getUserId());
-            car.setId(id);
+            car.setId(Integer.parseInt(idString));
         }
         return new ResponseEntity<>(car, HttpStatus.OK);
     }
 
     @Override
-    public void deleteCar(String stringId) {
-        if (stringId != null) {
-            ObjectId objectId = convertToObjectId(stringId);
+    public void deleteCar(int id) {
+        if (id>=0) {
+            ObjectId objectId = convertToObjectId(String.valueOf(id));
             carMongoDAO.deleteById(objectId);
         }
     }
@@ -97,4 +96,5 @@ public class CarServiceImpl2 implements CarService {
         photo.transferTo(file);
         carMongoDAO.save(carMongo);
     }
+
 }

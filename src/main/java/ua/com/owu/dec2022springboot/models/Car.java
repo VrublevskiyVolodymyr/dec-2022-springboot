@@ -1,4 +1,4 @@
-package ua.com.owu.dec2022springboot.dao.models;
+package ua.com.owu.dec2022springboot.models;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.Entity;
@@ -9,17 +9,15 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import ua.com.owu.dec2022springboot.views.Views;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
 @Entity
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonView(value = {Views.Level1.class})
-    private String id;
+    private int id;
 
     @JsonView(value = {Views.Level1.class,Views.Level2.class,Views.Level3.class})
     @NotBlank(message = "producer cannot be empty")

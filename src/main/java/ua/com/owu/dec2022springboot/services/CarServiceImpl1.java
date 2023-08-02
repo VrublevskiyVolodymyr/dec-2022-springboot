@@ -8,14 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 import ua.com.owu.dec2022springboot.dao.CarDAO;
-import ua.com.owu.dec2022springboot.dao.models.Car;
-import ua.com.owu.dec2022springboot.dao.models.User;
+import ua.com.owu.dec2022springboot.models.Car;
+import ua.com.owu.dec2022springboot.models.User;
 
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
-
-import static java.rmi.server.LogStream.log;
 
 @Service // @Service("one")
 @AllArgsConstructor
@@ -34,7 +32,7 @@ public class CarServiceImpl1 implements CarService {
         User user = userService.getUserById(car.getUserId()).getBody();
         assert user != null;
         String email = user.getEmail();
-        String body = "Hello user " + user.getName() + " car " + car.toString() + " is created :)";
+        String body = "Hello user " + user.getFirstname() + " car " + car.toString() + " is created :)";
         mailService.sendEmail(email, body, Optional.empty());
         String stringId = String.valueOf(car.getId());
         return new ResponseEntity<>(stringId, HttpStatus.CREATED);
@@ -44,23 +42,23 @@ public class CarServiceImpl1 implements CarService {
         return new ResponseEntity<>(carDAO.findAll(), HttpStatus.OK);
     }
 
-    public ResponseEntity<Car> getCar( String stringId) {
+    public ResponseEntity<Car> getCar( int id) {
         Car car = null;
-        int intId = Integer.parseInt(String.valueOf(stringId));
-        if (intId > 0) {
-            car = carDAO.findById(stringId).get();
+//        int intId = Integer.parseInt(String.valueOf(stringId));
+        if (id > 0) {
+            car = carDAO.findById(id).get();
         }
         return new ResponseEntity<>(car, HttpStatus.OK);
     }
 
-    public void deleteCar(String stringId) {
-            assert stringId != null;
-            Car car = carDAO.findById(stringId).get();
+    public void deleteCar(int id) {
+
+            Car car = carDAO.findById(id).get();
             User user = userService.getUserById(car.getUserId()).getBody();
             assert user != null;
             String email = user.getEmail();
-            String body = "Hello user  " + user.getName() + " car id " + stringId+ "  is deleted";
-            carDAO.deleteById(stringId);
+            String body = "Hello user  " + user.getFirstname() + " car id " + id+ "  is deleted";
+            carDAO.deleteById(id);
             mailService.sendEmail(email, body,Optional.empty());
     }
 
@@ -86,7 +84,7 @@ public class CarServiceImpl1 implements CarService {
         User user = userService.getUserById(userId).getBody();
         assert user != null;
         String email = user.getEmail();
-        String body = "Hello user " + user.getName() + " car " + car.toString() + " is created :)";
+        String body = "Hello user " + user.getFirstname() + " car " + car.toString() + " is created :)";
         mailService.sendEmail(email, body, Optional.of(file));
     }
 }

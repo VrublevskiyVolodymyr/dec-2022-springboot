@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ua.com.owu.dec2022springboot.dao.models.Car;
+import ua.com.owu.dec2022springboot.models.Car;
 import ua.com.owu.dec2022springboot.services.CarService;
 import ua.com.owu.dec2022springboot.views.Views;
 
@@ -36,9 +36,10 @@ public class CarController {
 
     @GetMapping("/{id}")
     @JsonView(value = Views.Level1.class)
-    public ResponseEntity<Car> getCar(@PathVariable(value="id") String stringId) {
-        return carService.getCar(stringId);
+    public ResponseEntity<Car> getCar(@PathVariable(value="id") int id) {
+        return carService.getCar(id);
     }
+
 
     @PostMapping("")
     public ResponseEntity<String> save(@RequestBody @Valid Car car) {
@@ -47,8 +48,8 @@ public class CarController {
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
-    public void deleteCar(@PathVariable(value="id") String stringId) {
-        carService.deleteCar(stringId);
+    public void deleteCar(@PathVariable(value="id") int id) {
+        carService.deleteCar(id);
     }
 
     @GetMapping("/power/{value}")
